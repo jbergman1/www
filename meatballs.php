@@ -1,11 +1,13 @@
 <?php
-	
+	date_default_timezone_set('Europe/Stockholm');
+	include 'comments.inc.php';
+	include 'dbh.inc.php';
+	session_start();
 ?>
 
 <!DOCTYPE html>
 <html>
 	<head>
-	<!--.-->
 		<title>Meatballs recipe</title>
 		<link 	rel = "stylesheet"
 				type = "text/css"
@@ -14,11 +16,27 @@
 	</head>
 	<body>
 	<ul class="navbar">
-		<li><a href="index.html">Home</a></li>
-		<li><a href="calendar.html">Calendar</a></li>
-		<li><a href="meatballs.html">Meatballs</a></li>
-		<li><a href="pancakes.html">Pancakes</a></li>
+		<li><a href="index.php">Home</a></li>
+		<li><a href="calendar.php">Calendar</a></li>
+		<li><a href="meatballs.php">Meatballs</a></li>
+		<li><a href="pancakes.php">Pancakes</a></li>
+		<li class="log"><?php
+			if (isset($_SESSION['id'])) {
+				echo "You are logged in!
+					<form method='POST' action='".userLogout()."'>
+					<button type='submit' name='logoutSubmit'>Logout</button>
+				</form>";
+			} else {
+				echo "<form method='POST' action='".getLogin($conn)."'>
+					<input type='text' name='uid'>
+					<input type='password' name='pwd'>
+					<button type='submit' name='loginSubmit'>Login</button>
+				</form>";
+			}
+		?></li>
 	</ul>
+
+<br>
 	<h3>
 		Meatballs Recipe
 	</h3>
@@ -56,17 +74,21 @@
 	</ul>
 	<br>
 	<h4>Comments</h4>
-	<div class="container">
-	<p>Digusting.</p>
-	<span class="time-left">13:37 11th September 2017</span>
-	<span class="user-right">Username</span>
-	</div>
 	
-	<form>
-		<input type='hidden' name='uid' value='anon'>
-		<input type='hidden' name='date' value=''>
-		<textarea name='message'></textarea>
-	</form>
+<?php
+	if (isset($_SESSION['id'])) {
+		echo "<form method='POST' action='".setComments($conn)."'>
+			<input type='hidden' name='uid' value='".$_SESSION['id']."'>
+			<input type='hidden' name='date' value='".date('Y-m-d H:i:s')."'>
+			<textarea name='message'></textarea><br>
+			<button type='submit' name='commentSubmit'>Comment</button>
+		</form>";
+	} else {
+		echo "You need to be logged in to comment";
+	}
+	
+	getComments($conn);
+?>
 </body>
 	
 	

@@ -1,3 +1,9 @@
+<?php
+	date_default_timezone_set('Europe/Stockholm');
+	include 'comments.inc.php';
+	include 'dbh.inc.php';
+	session_start();
+?>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -10,11 +16,26 @@
 	</head>
 	<body>
 		<ul class="navbar">
-		<li><a href="index.html">Home</a></li>
-		<li><a href="calendar.html">Calendar</a></li>
-		<li><a href="meatballs.html">Meatballs</a></li>
-		<li><a href="pancakes.html">Pancakes</a></li>
+		<li><a href="index.php">Home</a></li>
+		<li><a href="calendar.php">Calendar</a></li>
+		<li><a href="meatballs.php">Meatballs</a></li>
+		<li><a href="pancakes.php">Pancakes</a></li>
+		<li class="log"><?php
+			if (isset($_SESSION['id'])) {
+				echo "You are logged in!";
+				echo "<form method='POST' action='".userLogout()."'>
+					<button type='submit' name='logoutSubmit'>Logout</button>
+				</form>";
+			} else {
+				echo "<form method='POST' action='".getLogin($conn)."'>
+					<input type='text' name='uid'>
+					<input type='password' name='pwd'>
+					<button type='submit' name='loginSubmit'>Login</button>
+				</form>";
+			}
+		?></li>
 	</ul>
+
 	<table>
 	<tr>
 		<th>Monday</th>
